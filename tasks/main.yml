@@ -48,12 +48,24 @@
   when: cluster == 'openshift'
 
 # Until we have the dynamic client, we'll have to kubectl create the clusterservicebroker object
+- name: Get certificate authority
+  shell: "kubectl get secrets -n {{ broker_namespace }} {{ broker_name }}-client -o yaml | grep service-ca.crt | awk '{ print $2 }'"
+  register: cluster_ca
+  when: apb_action == 'provision'
+
+- name: Set certificate authority
+  set_fact:
+    broker_ca_crt: "{{ cluster_ca.stdout }}"
+  when: apb_action == 'provision'
+
 - name: 'Template out {{ broker_kind }} object'
   template:
     src: broker.servicecatalog.yaml
     dest: /tmp/broker.servicecatalog.yaml
 
-- name: 'Use kubectl to create/delete {{ broker_kind }}'
-  command: kubectl create -f /tmp/broker.servicecatalog.yaml
+- name: 'Use kubectl to {{ kubectl_action}} {{ broker_kind }}'
+  command: kubectl {{ kubectl_action }} -f /tmp/broker.servicecatalog.yaml
+  register: csb_command
+  failed_when: csb_command.rc != 0 and 'AlreadyExists' not in csb_command.stderr
 
 

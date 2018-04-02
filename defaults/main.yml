@@ -20,7 +20,7 @@ broker_kind: ClusterServiceBroker
 broker_ca_crt: ''
 
 broker_clusterrole: admin
-broker_image: "docker.io/ansibleplaybookbundle/origin-ansible-service-broker"
+broker_image: "ansibleplaybookbundle/origin-ansible-service-broker:latest"
 broker_config_path: /etc/ansible-service-broker/config.yaml
 
 svc_cat_api_version: servicecatalog.k8s.io/v1beta1
