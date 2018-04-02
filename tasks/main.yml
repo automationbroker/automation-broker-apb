@@ -1,0 +1,59 @@
+---
+
+- name: 'Set broker objects state={{ state }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - broker.namespace.yaml
+    - broker.service.yaml
+    - broker.serviceaccount.yaml
+    - broker.clusterrolebinding.yaml
+    - broker.configmap.yaml
+
+- name: 'Set broker-auth objects state={{ state }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - broker-auth.clusterrole.yaml
+    - broker-auth.clusterrolebinding.yaml
+    - broker-auth.secret.yaml
+
+- name: 'Set broker-client objects state={{ state }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - broker-client.serviceaccount.yaml
+    - broker-client.secret.yaml
+    - broker-client.clusterrolebinding.yaml
+
+- name: 'Set broker deployment object state={{ state }}'
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.deployment.yaml') | from_yaml }}"
+
+- name: 'Set broker-access objects state={{ state }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - broker-access.clusterrole.yaml
+
+- name: 'Set route state={{ state }}'
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.route.yaml') | from_yaml }}"
+  when: cluster == 'openshift'
+
+# Until we have the dynamic client, we'll have to kubectl create the clusterservicebroker object
+- name: 'Template out {{ broker_kind }} object'
+  template:
+    src: broker.servicecatalog.yaml
+    dest: /tmp/broker.servicecatalog.yaml
+
+- name: 'Use kubectl to create/delete {{ broker_kind }}'
+  command: kubectl create -f /tmp/broker.servicecatalog.yaml
+
+

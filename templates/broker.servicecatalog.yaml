@@ -1,0 +1,15 @@
+---
+
+apiVersion: '{{ svc_cat_api_version }}'
+kind: '{{ broker_kind }}'
+metadata:
+  name: '{{ broker_name }}'
+spec:
+  url: 'https://{{ broker_name }}.{{ broker_namespace }}.svc:1338/{{ broker_name }}/'
+  authInfo:
+    bearer:
+      secretRef:
+        kind: Secret
+        namespace: '{{ broker_namespace }}'
+        name: '{{ broker_name }}-client'
+  caBundle: '{{ broker_ca_crt }}'

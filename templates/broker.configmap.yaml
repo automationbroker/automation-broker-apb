@@ -1,0 +1,57 @@
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: broker-config
+  namespace: '{{ broker_namespace }}'
+  labels:
+    app: '{{ broker_name }}'
+data:
+  broker-config: |
+    registry:
+      - type: dockerhub
+        name: dh
+        url: https://registry.hub.docker.com
+        org: "{{ apb_org }}"
+        tag: "{{ apb_tag }}"
+        white_list:
+          - ".*-apb$"
+      - type: local_openshift
+        name: localregistry
+        namespaces: ['openshift']
+        # NOTE TO ADMINS: The default whitelist policy here will pass *all* APBs
+        # found in the local openshift registry. If this is not desired,
+        # manipulate the following regex to only match APBs you wish to be made available.
+        white_list:
+          - ".*"
+    dao:
+      type: '{{ dao_type }}'
+    log:
+      logfile: /var/log/ansible-service-broker/asb.log
+      stdout: true
+      level: debug
+      color: true
+    openshift:
+      host: '{{ cluster_auth_host }}'
+      ca_file: '{{ ca_file }}'
+      bearer_token_file: '{{ bearer_token_file }}'
+      image_pull_policy: '{{ image_pull_policy }}'
+      sandbox_role: '{{ sandbox_role }}'
+      namespace: '{{ namespace }}'
+      keep_namespace: '{{ keep_namespace }}'
+      keep_namespace_on_error: '{{ keep_namespace_on_error }}'
+    broker:
+      dev_broker: '{{ dev_broker }}'
+      bootstrap_on_startup: '{{ bootstrap_on_startup }}'
+      refresh_interval: '{{ refresh_interval }}'
+      launch_apb_on_bind: '{{ launch_apb_on_bind }}'
+      output_request: '{{ output_request }}'
+      recovery: '{{ recovery }}'
+      ssl_cert_key: /etc/tls/private/tls.key
+      ssl_cert: /etc/tls/private/tls.crt
+      auto_escalate: '{{ auto_escalate }}'
+      cluster_url: '{{ broker_namespace }}'
+      auth:
+        - type: basic
+          enabled: '{{ enable_basic_auth }}'

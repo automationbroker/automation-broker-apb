@@ -1,0 +1,56 @@
+---
+apb_action: provision
+
+kubectl_action_map:
+  provision: create
+  deprovision: delete
+kubectl_action: "{{ kubectl_action_map[apb_action]}}"
+
+state_map:
+  provision: present
+  deprovision: absent
+state: "{{ state_map[apb_action] }}"
+
+cluster: 'kubernetes'
+
+# broker_name: ansible-service-broker
+broker_name: ansible-service-broker
+broker_namespace: "{{ broker_name }}"
+broker_kind: ClusterServiceBroker
+broker_ca_crt: ''
+
+broker_clusterrole: admin
+broker_image: "docker.io/ansibleplaybookbundle/origin-ansible-service-broker"
+broker_config_path: /etc/ansible-service-broker/config.yaml
+
+svc_cat_api_version: servicecatalog.k8s.io/v1beta1
+
+# Note: Must be Base64 Encoded - http://red.ht/2wbrCYo
+broker_user: "YWRtaW4="
+broker_pass: "YWRtaW4="
+
+# How does broker save state? crd | etcd
+dao_type: 'crd'
+
+# Registry configuration
+apb_org: ansibleplaybookbundle
+apb_tag: latest
+
+# Cluster Configuration
+cluster_auth_host: ""
+ca_file: ""
+bearer_token_file: ""
+image_pull_policy: "IfNotPresent"
+sandbox_role: "edit"
+keep_namespace: "false"
+keep_namespace_on_error: "true"
+
+# Broker Configuration
+dev_broker: "true"
+bootstrap_on_startup: "true"
+refresh_interval: "600s"
+launch_apb_on_bind: "false"
+output_request: "true"
+recovery: "true"
+auto_escalate: "false"
+enable_basic_auth: "false"
