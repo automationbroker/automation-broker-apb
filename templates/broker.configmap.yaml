@@ -39,19 +39,19 @@ data:
       image_pull_policy: '{{ image_pull_policy }}'
       sandbox_role: '{{ sandbox_role }}'
       namespace: '{{ broker_namespace }}'
-      keep_namespace: '{{ keep_namespace }}'
-      keep_namespace_on_error: '{{ keep_namespace_on_error }}'
+      keep_namespace: {{ keep_namespace }}
+      keep_namespace_on_error: {{ keep_namespace_on_error }}
     broker:
-      dev_broker: '{{ dev_broker }}'
-      bootstrap_on_startup: '{{ bootstrap_on_startup }}'
+      dev_broker: {{ dev_broker }}
+      bootstrap_on_startup: {{ bootstrap_on_startup }}
       refresh_interval: '{{ refresh_interval }}'
-      launch_apb_on_bind: '{{ launch_apb_on_bind }}'
-      output_request: '{{ output_request }}'
-      recovery: '{{ recovery }}'
+      launch_apb_on_bind: {{ launch_apb_on_bind }}
+      output_request: {{ output_request }}
+      recovery: {{ recovery }}
       ssl_cert_key: /etc/tls/private/tls.key
       ssl_cert: /etc/tls/private/tls.crt
-      auto_escalate: '{{ auto_escalate }}'
-      cluster_url: '{{ broker_namespace }}'
+      auto_escalate: {{ auto_escalate }}
+      cluster_url: {{ broker_namespace }}
       auth:
         - type: basic
-          enabled: '{{ enable_basic_auth }}'
+          enabled: {{ enable_basic_auth }}
