@@ -71,5 +71,5 @@ broker_local_openshift_white_list: [ ".*" ]
 broker_helm_enabled: false
 broker_helm_name: stable
 broker_helm_url: https://kubernetes-charts.storage.googleapis.com
-broker_helm_runner: docker.io/djzager/helm-runner:latest
+broker_helm_runner: docker.io/automationbroker/helm-runner:latest
 broker_helm_white_list: [ ".*" ]
