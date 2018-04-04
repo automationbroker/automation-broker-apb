@@ -20,7 +20,7 @@ broker_clusterrole: admin
 broker_sandbox_role: edit
 
 # How does broker save state? crd | etcd
-# TODO: Support etcd
+# TODO: Support etcd https://github.com/automationbroker/automation-broker-apb/issues/1
 broker_dao_type: crd
 
 # Whether or not to keep the sandbox namespace
@@ -49,6 +49,7 @@ helm_enabled: false
 
 # Broker dockerhub registry options
 # TODO: Support multiple dockerhub registries
+# https://github.com/automationbroker/automation-broker-apb/issues/2
 broker_dockerhub_enabled: true
 broker_dockerhub_name: dh
 broker_dockerhub_url: https://registry.hub.docker.com
@@ -58,6 +59,7 @@ broker_dockerhub_white_list: [ ".*-apb$" ]
 
 # Broker local openshift registry options
 # TODO: Support multiple local openshift registries
+# https://github.com/automationbroker/automation-broker-apb/issues/2
 broker_local_openshift_enabled: "{{ true if cluster == 'openshift' else false }}"
 broker_local_openshift_name: localregistry
 broker_local_openshift_namespaces: [ "openshift" ]
@@ -68,6 +70,7 @@ broker_local_openshift_white_list: [ ".*" ]
 
 # Broker helm registry options
 # TODO: Support multiple helm type registries
+# https://github.com/automationbroker/automation-broker-apb/issues/2
 broker_helm_enabled: false
 broker_helm_name: stable
 broker_helm_url: https://kubernetes-charts.storage.googleapis.com
