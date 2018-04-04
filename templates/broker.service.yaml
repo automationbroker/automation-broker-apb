@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: '{{ broker_name }}'
-  namespace: '{{ broker_namespace }}'
+  name: {{ broker_name }}
+  namespace: {{ broker_namespace }}
   labels:
-    app: '{{ broker_name }}'
-    service: '{{ broker_name }}'
+    app: {{ broker_name }}
+    service: {{ broker_name }}
   annotations:
 {% if cluster == 'openshift' %}
-    service.alpha.openshift.io/serving-cert-secret-name: '{{ broker_name }}-tls'
+    service.alpha.openshift.io/serving-cert-secret-name: {{ broker_name }}-tls
 {% endif %}
 spec:
   ports:
@@ -19,5 +19,5 @@ spec:
       targetPort: 1338
       protocol: TCP
   selector:
-    app: '{{ broker_name }}'
-    service: '{{ broker_name }}'
+    app: {{ broker_name }}
+    service: {{ broker_name }}

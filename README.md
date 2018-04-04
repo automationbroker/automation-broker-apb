@@ -47,7 +47,7 @@ $ kubectl run automation-broker-apb \
     --restart=Never \
     --attach=true \
     --serviceaccount=automation-broker-apb \
-    -- provision -e broker_name=automation-broker -e cluster=openshift
+    -- provision -e broker_name=automation-broker
 ```
 
 Example Playbook

@@ -7,15 +7,15 @@ kind: Deployment
 kind: DeploymentConfig
 {% endif %}
 metadata:
-  name: '{{ broker_name }}'
-  namespace: '{{ broker_namespace }}'
+  name: {{ broker_name }}
+  namespace: {{ broker_namespace }}
   labels:
-    app: '{{ broker_name }}'
-    service: '{{ broker_name }}'
+    app: {{ broker_name }}
+    service: {{ broker_name }}
 spec:
   replicas: 1
   selector:
-    app: '{{ broker_name }}'
+    app: {{ broker_name }}
   strategy:
 {% if cluster == 'kubernetes' %}
     type: RollingUpdate
@@ -25,27 +25,29 @@ spec:
   template:
     metadata:
       labels:
-        app: '{{ broker_name }}'
-        service: '{{ broker_name }}'
+        app: {{ broker_name }}
+        service: {{ broker_name }}
     spec:
-      serviceAccount: '{{ broker_name }}'
+      serviceAccount: {{ broker_name }}
       containers:
-      - image: '{{ broker_image }}'
-        name: '{{ broker_name }}'
-        imagePullPolicy: IfNotPresent
+      - image: {{ broker_image }}
+        name: {{ broker_name }}
+        imagePullPolicy: {{ broker_image_pull_policy }}
         volumeMounts:
           - name: config-volume
-            mountPath: /etc/ansible-service-broker
-          - name: '{{ broker_name }}-tls'
+            mountPath: /etc/{{ broker_name }}
+          - name: {{ broker_name }}-tls
             mountPath: /etc/tls/private
-          - name: '{{ broker_name }}-auth-volume'
+{% if broker_basic_auth_enabled %}
+          - name: {{ broker_name }}-auth-volume
             mountPath: /var/run/asb-auth
+{% endif %}
         ports:
           - containerPort: 1338
             protocol: TCP
         env:
         - name: BROKER_CONFIG
-          value: '{{ broker_config_path }}'
+          value: /etc/{{ broker_name }}/config.yaml
         resources: {}
         terminationMessagePath: /tmp/termination-log
         readinessProbe:
@@ -69,9 +71,11 @@ spec:
             items:
             - key: broker-config
               path: config.yaml
-        - name: '{{ broker_name }}-tls'
+        - name: {{ broker_name }}-tls
           secret:
-            secretName: '{{ broker_name }}-tls'
-        - name: '{{ broker_name }}-auth-volume'
+            secretName: {{ broker_name }}-tls
+{% if broker_basic_auth_enabled %}
+        - name: {{ broker_name }}-auth-volume
           secret:
-            secretName: '{{ broker_name }}-auth-secret'
+            secretName: {{ broker_name }}-auth-secret
+{% endif %}

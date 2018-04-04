@@ -1,0 +1,11 @@
+---
+
+kubectl_action_map:
+  provision: create
+  deprovision: delete
+kubectl_action: "{{ kubectl_action_map[apb_action] }}"
+
+state_map:
+  provision: present
+  deprovision: absent
+state: "{{ state_map[apb_action] }}"

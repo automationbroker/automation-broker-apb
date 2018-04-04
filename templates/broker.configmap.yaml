@@ -4,54 +4,72 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: broker-config
-  namespace: '{{ broker_namespace }}'
+  namespace: {{ broker_namespace }}
   labels:
-    app: '{{ broker_name }}'
+    app: {{ broker_name }}
 data:
   broker-config: |
     registry:
+{% if broker_dockerhub_enabled %}
       - type: dockerhub
-        name: dh
-        url: https://registry.hub.docker.com
-        org: "{{ apb_org }}"
-        tag: "{{ apb_tag }}"
+        name: {{ broker_dockerhub_name }}
+        url: {{ broker_dockerhub_url }}
+        org: {{ broker_dockerhub_org }}
+        tag: {{ broker_dockerhub_tag }}
         white_list:
-          - ".*-apb$"
+{%     for item in broker_dockerhub_white_list %}
+          - {{ item | quote }}
+{%     endfor %}
+{% endif  %}
+{% if broker_local_openshift_enabled %}
       - type: local_openshift
-        name: localregistry
-        namespaces: ['openshift']
-        # NOTE TO ADMINS: The default whitelist policy here will pass *all* APBs
-        # found in the local openshift registry. If this is not desired,
-        # manipulate the following regex to only match APBs you wish to be made available.
+        name: {{ broker_local_openshift_name }}
+        namespaces:
+{%     for item in broker_local_openshift_namespaces %}
+          - {{ item | quote }}
+{%     endfor %}
         white_list:
-          - ".*"
+{%     for item in broker_local_openshift_white_list %}
+          - {{ item | quote }}
+{%     endfor %}
+{% endif  %}
+{% if broker_helm_enabled %}
+      - type: helm
+        name: {{ broker_helm_name }}
+        url: {{ broker_helm_url }}
+        runner: {{ broker_helm_runner }}
+        white_list:
+{%     for item in broker_helm_white_list %}
+          - {{ item | quote }}
+{%     endfor %}
+{% endif  %}
     dao:
-      type: '{{ dao_type }}'
+      type: {{ broker_dao_type }}
     log:
       logfile: /var/log/ansible-service-broker/asb.log
       stdout: true
       level: debug
       color: true
     openshift:
-      host: '{{ cluster_auth_host }}'
-      ca_file: '{{ ca_file }}'
-      bearer_token_file: '{{ bearer_token_file }}'
-      image_pull_policy: '{{ image_pull_policy }}'
-      sandbox_role: '{{ sandbox_role }}'
-      namespace: '{{ broker_namespace }}'
-      keep_namespace: {{ keep_namespace }}
-      keep_namespace_on_error: {{ keep_namespace_on_error }}
+      host: ''
+      ca_file: ''
+      bearer_token_file: ''
+      image_pull_policy: {{ broker_image_pull_policy }}
+      sandbox_role: {{ broker_sandbox_role }}
+      namespace: {{ broker_namespace }}
+      keep_namespace: {{ broker_keep_namespace }}
+      keep_namespace_on_error: {{ broker_keep_namespace_on_error }}
     broker:
-      dev_broker: {{ dev_broker }}
-      bootstrap_on_startup: {{ bootstrap_on_startup }}
-      refresh_interval: '{{ refresh_interval }}'
-      launch_apb_on_bind: {{ launch_apb_on_bind }}
-      output_request: {{ output_request }}
-      recovery: {{ recovery }}
+      dev_broker: {{ broker_dev }}
+      bootstrap_on_startup: {{ broker_bootstrap_on_startup }}
+      refresh_interval: {{ broker_refresh_interval }}
+      launch_apb_on_bind: {{ broker_launch_apb_on_bind }}
+      output_request: {{ broker_output_request }}
+      recovery: {{ broker_recovery }}
       ssl_cert_key: /etc/tls/private/tls.key
       ssl_cert: /etc/tls/private/tls.crt
-      auto_escalate: {{ auto_escalate }}
+      auto_escalate: {{ broker_auto_escalate }}
       cluster_url: {{ broker_namespace }}
       auth:
         - type: basic
-          enabled: {{ enable_basic_auth }}
+          enabled: {{ broker_basic_auth_enabled }}

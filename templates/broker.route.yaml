@@ -3,15 +3,15 @@
 apiVersion: v1
 kind: Route
 metadata:
-  name: '{{ broker_name }}'
-  namespace: '{{ broker_namespace }}'
+  name: {{ broker_name }}
+  namespace: {{ broker_namespace }}
   labels:
-    app: '{{ broker_name }}'
-    service: '{{ broker_name }}'
+    app: {{ broker_name }}
+    service: {{ broker_name }}
 spec:
   to:
     kind: Service
-    name: '{{ broker_name }}'
+    name: {{ broker_name }}
   port:
     targetPort: port-1338
   tls:
