@@ -14,8 +14,8 @@ data:
       - type: dockerhub
         name: {{ broker_dockerhub_name }}
         url: {{ broker_dockerhub_url }}
-        org: {{ broker_dockerhub_org }}
-        tag: {{ broker_dockerhub_tag }}
+        org: {{ broker_dockerhub_org | quote }}
+        tag: {{ broker_dockerhub_tag | quote }}
         white_list:
 {%     for item in broker_dockerhub_white_list %}
           - {{ item | quote }}
@@ -44,7 +44,7 @@ data:
 {%     endfor %}
 {% endif  %}
     dao:
-      type: {{ broker_dao_type }}
+      type: {{ broker_dao_type | quote }}
     log:
       logfile: /var/log/ansible-service-broker/asb.log
       stdout: true
@@ -54,15 +54,15 @@ data:
       host: ''
       ca_file: ''
       bearer_token_file: ''
-      image_pull_policy: {{ broker_image_pull_policy }}
-      sandbox_role: {{ broker_sandbox_role }}
-      namespace: {{ broker_namespace }}
+      image_pull_policy: {{ broker_image_pull_policy | quote }}
+      sandbox_role: {{ broker_sandbox_role | quote }}
+      namespace: {{ broker_namespace | quote }}
       keep_namespace: {{ broker_keep_namespace }}
       keep_namespace_on_error: {{ broker_keep_namespace_on_error }}
     broker:
       dev_broker: {{ broker_dev }}
       bootstrap_on_startup: {{ broker_bootstrap_on_startup }}
-      refresh_interval: {{ broker_refresh_interval }}
+      refresh_interval: {{ broker_refresh_interval | quote }}
       launch_apb_on_bind: {{ broker_launch_apb_on_bind }}
       output_request: {{ broker_output_request }}
       recovery: {{ broker_recovery }}

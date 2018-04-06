@@ -1,6 +1,6 @@
 ---
 
-- name: hello-world-apb provision
+- name: automation-broker-apb provision
   hosts: localhost
   gather_facts: false
   connection: local

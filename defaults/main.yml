@@ -9,6 +9,8 @@ cluster: kubernetes
 broker_name: automation-broker
 broker_namespace: "{{ broker_name }}"
 
+create_broker_namespace: false
+
 # The image to use for the broker
 broker_image: ansibleplaybookbundle/origin-ansible-service-broker:latest
 broker_image_pull_policy: "IfNotPresent"
