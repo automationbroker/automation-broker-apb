@@ -10,7 +10,7 @@
     msg:
      There is no service catalog api-versions available in this cluster.
      Please install the service catalog and retry.
-  when: "'servicecatalog.k8s.io' not in kapi_versions.stdout"
+  when: apb_action == 'provision' and 'servicecatalog.k8s.io' not in kapi_versions.stdout
 
 - name: 'Set broker namespace state={{ state }}'
   k8s_raw:
