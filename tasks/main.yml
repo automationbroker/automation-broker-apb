@@ -5,7 +5,8 @@
   register: kapi_versions
   when: apb_action == 'provision'
 
-- fail:
+- name: 'Fail if service-catalog not installed'
+  fail:
     msg:
      There is no service catalog api-versions available in this cluster.
      Please install the service catalog and retry.
