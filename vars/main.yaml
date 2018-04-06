@@ -9,9 +9,3 @@ state_map:
   provision: present
   deprovision: absent
 state: "{{ state_map[apb_action] }}"
-
-deployment_lookup: "{{ lookup('k8s', kind='Deployment', namespace=broker_namespace, resource_name=broker_name) }}"
-deployment_config_lookup: "{{ lookup('openshift', kind='DeploymentConfig', namespace=broker_namespace, resource_name=broker_name) }}"
-available_status_query: "status.conditions[?type == 'Available'].status"
-deployment_query: "{{ deployment_lookup | json_query(available_status_query) | first }}"
-deployment_config_query: "{{ deployment_config_lookup | json_query(available_status_query) | first }}"
