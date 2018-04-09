@@ -14,12 +14,18 @@ metadata:
     service: {{ broker_name }}
 spec:
   replicas: 1
-  selector:
-    app: {{ broker_name }}
-  strategy:
 {% if cluster == 'kubernetes' %}
+  selector:
+    matchLabels:
+      app: {{ broker_name }}
+      service: {{ broker_name }}
+  strategy:
     type: RollingUpdate
 {% else %}
+  selector:
+    app: {{ broker_name }}
+    service: {{ broker_name }}
+  strategy:
     type: Rolling
 {% endif %}
   template:
@@ -55,14 +61,14 @@ spec:
             path: /healthz
             port: 1338
             scheme: HTTPS
-          initialDelaySeconds: 60
+          initialDelaySeconds: {{ broker_probe_initial_delay }}
           timeoutSeconds: 1
         livenessProbe:
           httpGet:
             port: 1338
             path: /healthz
             scheme: HTTPS
-          initialDelaySeconds: 60
+          initialDelaySeconds: {{ broker_probe_initial_delay }}
           timeoutSeconds: 1
       volumes:
         - name: config-volume

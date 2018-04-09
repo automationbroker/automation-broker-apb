@@ -1,0 +1,30 @@
+---
+
+# This file is only for openshift specific actions related to deployment.
+# The main driver for separate files is the fact that, in kubernetes, a
+# TLS secret must be created for the broker. Logic shouldn't be added here
+# unless absolutely necessary.
+
+- name: 'Set broker deployment object state={{ state }}'
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.deployment.yaml') | from_yaml }}"
+
+- name: 'Set route state={{ state }}'
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.route.yaml') | from_yaml }}"
+
+# Until we have the dynamic client, we'll have to kubectl create the clusterservicebroker object
+# This is because service catalog specific objects are not in either the kubernetes or openshift
+# client's models.
+- name: Get certificate authority
+  shell: "kubectl get secrets -n {{ broker_namespace }} {{ broker_name }}-client -o yaml | grep service-ca.crt | awk '{ print $2 }'"
+  register: cluster_ca
+  when: apb_action == 'provision'
+
+- name: Set facts for service catalog
+  set_fact:
+    broker_ca_crt: "{{ cluster_ca.stdout }}"
+    broker_client_secret: "{{ broker_name }}-client"
+  when: apb_action == 'provision'
