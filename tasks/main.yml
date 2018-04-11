@@ -61,10 +61,24 @@
 # Handle how the broker saves state
 - include_tasks: "dao_{{ broker_dao_type }}.yaml"
 
-# Handle the broker deployment
-- include_tasks: "{{ cluster }}.yaml"
+- include_tasks: "generate_certificate.yaml"
+  when: apb_action == 'provision'
+
+- name: 'Set broker deployment object state={{ state }}'
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.deployment.yaml') | from_yaml }}"
+
+- name: 'Set route state={{ state }}'
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.route.yaml') | from_yaml }}"
+  when: cluster == 'openshift'
 
 # Handle the service-catalog cluster object
+# Until we have the dynamic client, we'll have to kubectl create the clusterservicebroker object
+# This is because service catalog specific objects are not in either the kubernetes or openshift
+# client's models.
 - name: 'Template out cluster service broker object'
   template:
     src: broker.servicecatalog.yaml
