@@ -11,18 +11,8 @@
 #    - servicebindings.crd.yaml
 #    - serviceinstances.crd.yaml
 
-- name: 'Template out cluster resource definition objects'
-  template:
-    src: "{{ item }}"
-    dest: "/tmp/{{ item }}"
-  with_items:
-    - bundle.crd.yaml
-    - jobstates.crd.yaml
-    - servicebindings.crd.yaml
-    - serviceinstances.crd.yaml
-
 - name: 'Use kubectl to {{ kubectl_action }} cluster resource definitions'
-  command: kubectl {{ kubectl_action }} -f /tmp/{{ item }}
+  command: kubectl {{ kubectl_action }} -f {{ lookup('fileglob', item) }}
   register: crd_command
   failed_when: crd_command.rc != 0 and 'AlreadyExists' not in crd_command.stderr and 'NotFound' not in crd_command.stderr
   with_items:
