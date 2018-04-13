@@ -44,7 +44,7 @@ spec:
             mountPath: /etc/{{ broker_name }}
           - name: {{ broker_name }}-tls
             mountPath: /etc/tls/private
-{% if broker_basic_auth_enabled %}
+{% if broker_basic_auth_enabled | bool %}
           - name: {{ broker_name }}-auth-volume
             mountPath: /var/run/asb-auth
 {% endif %}
@@ -80,7 +80,7 @@ spec:
         - name: {{ broker_name }}-tls
           secret:
             secretName: {{ broker_name }}-tls
-{% if broker_basic_auth_enabled %}
+{% if broker_basic_auth_enabled | bool %}
         - name: {{ broker_name }}-auth-volume
           secret:
             secretName: {{ broker_name }}-auth-secret

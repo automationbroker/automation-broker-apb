@@ -10,7 +10,7 @@ metadata:
 data:
   broker-config: |
     registry:
-{% if broker_dockerhub_enabled %}
+{% if broker_dockerhub_enabled | bool %}
       - type: dockerhub
         name: {{ broker_dockerhub_name }}
         url: {{ broker_dockerhub_url }}
@@ -21,7 +21,7 @@ data:
           - {{ item | quote }}
 {%     endfor %}
 {% endif  %}
-{% if broker_local_openshift_enabled %}
+{% if broker_local_openshift_enabled | bool %}
       - type: local_openshift
         name: {{ broker_local_openshift_name }}
         namespaces:
@@ -33,7 +33,7 @@ data:
           - {{ item | quote }}
 {%     endfor %}
 {% endif  %}
-{% if broker_helm_enabled %}
+{% if broker_helm_enabled | bool %}
       - type: helm
         name: {{ broker_helm_name }}
         url: {{ broker_helm_url }}
