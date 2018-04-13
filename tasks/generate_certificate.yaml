@@ -31,14 +31,6 @@
     - name: Register certificate related facts for broker
       set_fact:
         broker_ca_crt: "{{ lookup('file', '/tmp/' + broker_name + '-cert/cert.pem') | b64encode }}"
-        broker_client_secret: "{{
-          lookup(
-            'k8s',
-            kind='ServiceAccount',
-            namespace=broker_namespace,
-            resource_name=broker_name + '-client'
-            ) | json_query('secrets') | first | json_query('name')
-        }}"
 
 - name: Get CA for Broker
   when: cluster == 'openshift'
@@ -51,4 +43,16 @@
     - name: Register certificate related facts for broker
       set_fact:
         broker_ca_crt: "{{ cluster_ca.stdout }}"
-        broker_client_secret: "{{ broker_name }}-client"
+
+- name: Set broker_client_secret fact
+  set_fact:
+    broker_client_secret: "{{
+      lookup(
+        'k8s',
+        kind='ServiceAccount',
+        namespace=broker_namespace,
+        resource_name=broker_name + '-client'
+      ) | to_json | from_json | json_query(query) | first
+    }}"
+  vars:
+    query: "secrets[?starts_with(name, '{{ broker_name }}-client-token')].name"
