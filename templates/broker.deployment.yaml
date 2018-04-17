@@ -28,6 +28,9 @@ spec:
   strategy:
     type: Rolling
 {% endif %}
+{% if broker_node_selector != "" %}
+  nodeSelector: '{{ broker_node_selector }}'
+{% endif %}
   template:
     metadata:
       labels:
@@ -39,15 +42,6 @@ spec:
       - image: {{ broker_image }}
         name: broker
         imagePullPolicy: {{ broker_image_pull_policy }}
-        volumeMounts:
-          - name: config-volume
-            mountPath: /etc/{{ broker_name }}
-          - name: {{ broker_name }}-tls
-            mountPath: /etc/tls/private
-{% if broker_basic_auth_enabled | bool %}
-          - name: {{ broker_name }}-auth-volume
-            mountPath: /var/run/asb-auth
-{% endif %}
         ports:
           - containerPort: 1338
             protocol: TCP
@@ -70,6 +64,19 @@ spec:
             scheme: HTTPS
           initialDelaySeconds: {{ broker_probe_initial_delay }}
           timeoutSeconds: 1
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/{{ broker_name }}
+          - name: broker-tls
+            mountPath: /etc/tls/private
+{% if broker_basic_auth_enabled | bool %}
+          - name: broker-auth-volume
+            mountPath: /var/run/asb-auth
+{% endif %}
+{% if broker_dao_type == 'etcd' %}
+          - name: etcd-auth
+            mountPath: /var/run/etcd-auth
+{% endif %}
       volumes:
         - name: config-volume
           configMap:
@@ -77,11 +84,16 @@ spec:
             items:
             - key: broker-config
               path: config.yaml
-        - name: {{ broker_name }}-tls
+        - name: broker-tls
           secret:
-            secretName: {{ broker_name }}-tls
+            secretName: {{ broker_tls_name }}
 {% if broker_basic_auth_enabled | bool %}
-        - name: {{ broker_name }}-auth-volume
+        - name: broker-auth-volume
           secret:
-            secretName: {{ broker_name }}-auth-secret
+            secretName: broker-auth
+{% endif %}
+{% if broker_dao_type == 'etcd' %}
+        - name: etcd-auth
+          secret:
+            secretName: etcd-auth
 {% endif %}

@@ -13,6 +13,7 @@ create_broker_namespace: false
 broker_image: ansibleplaybookbundle/origin-ansible-service-broker:latest
 broker_image_pull_policy: "IfNotPresent"
 broker_probe_initial_delay: 120
+broker_node_selector: ""
 
 # The kind of broker, useful in the case the service-catalog
 # supports namespaced service brokers
@@ -23,6 +24,12 @@ broker_sandbox_role: edit
 # How does broker save state? crd | etcd
 # TODO: Support etcd https://github.com/automationbroker/automation-broker-apb/issues/1
 broker_dao_type: crd
+
+# ETCD configuration (ignored unless dao_type is 'etcd')
+etcd_image: quay.io/coreos/etcd:latest
+etcd_path: /usr/local/bin/etcd
+etcd_port: "2379"
+etcd_persist_storage: "true"
 
 # Whether or not to keep the sandbox namespace
 broker_keep_namespace: "false"
