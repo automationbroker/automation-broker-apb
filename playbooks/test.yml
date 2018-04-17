@@ -14,6 +14,13 @@
         create_broker_namespace: true
         broker_dao_type: crd
 
+    - name: Wait for clusterservicebroker to become available
+      command: kubectl get clusterservicebrokers automation-broker -o go-template={%raw%}'{{ range .status.conditions }}{{ if eq .type "Ready" }}{{ .status }}{{ end }}{{ end }}'{%endraw%}
+      register: broker_ready
+      retries: 60
+      delay: 10
+      until: broker_ready.stdout == 'True'
+
     - name: Deprovision test
       include_role:
         name: automation-broker-apb
@@ -40,6 +47,13 @@
         apb_action: provision
         create_broker_namespace: true
         broker_dao_type: etcd
+
+    - name: Wait for clusterservicebroker to become available
+      command: kubectl get clusterservicebrokers automation-broker -o go-template={%raw%}'{{ range .status.conditions }}{{ if eq .type "Ready" }}{{ .status }}{{ end }}{{ end }}'{%endraw%}
+      register: broker_ready
+      retries: 60
+      delay: 10
+      until: broker_ready.stdout == 'True'
 
     - name: Deprovision test
       include_role:
