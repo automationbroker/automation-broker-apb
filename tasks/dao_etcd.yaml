@@ -22,7 +22,9 @@
         creates: '{{ broker_etcd_certs_dir }}/cert.pem'
 
     - name: Create tls secret
-      when: cluster == 'kubernetes'
+      when:
+        - cluster == 'kubernetes'
+        - apb_action == 'provision'
       command: >
         kubectl create secret tls -n {{ broker_namespace }} {{ etcd_tls_name }}
         --cert="{{ broker_etcd_certs_dir }}/cert.pem"
