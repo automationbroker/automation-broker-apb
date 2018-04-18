@@ -25,7 +25,7 @@
   when: apb_action == 'provision' and 'servicecatalog.k8s.io' not in kapi_versions.stdout
 
 - name: 'Set broker namespace state={{ state }}'
-  k8s_raw:
+  openshift_raw:
     state: '{{ state }}'
     definition: "{{ lookup('template', 'broker.namespace.yaml') | from_yaml }}"
   when: create_broker_namespace

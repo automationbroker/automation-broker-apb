@@ -8,9 +8,9 @@ metadata:
   labels:
     app: {{ broker_name }}
     service: {{ broker_name }}
-  annotations:
 {% if cluster == 'openshift' %}
-    service.alpha.openshift.io/serving-cert-secret-name: {{ broker_name }}-tls
+  annotations:
+    service.alpha.openshift.io/serving-cert-secret-name: {{ broker_tls_name }}
 {% endif %}
 spec:
   ports:

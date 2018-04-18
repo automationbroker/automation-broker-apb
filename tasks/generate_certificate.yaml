@@ -7,39 +7,47 @@
 #    privatekey_path: /tmp/{{ broker_name }}-cert/key.pem
 #    subject: "/CN={{ broker_name }}.{{ broker_name }}.svc"
 #    provider: selfsigned
-- name: Create OpenSSL Cert for Broker in k8s
-  when: cluster == 'kubernetes'
+- when: cluster == 'kubernetes'
+  vars:
+    cert_dir: "/tmp/{{ broker_name }}-cert"
   block:
     - name: Create directory for cert
       file:
-        path: /tmp/{{ broker_name }}-cert
+        path: "{{ cert_dir }}"
         state: directory
+        mode: 0755
+      check_mode: no
+
     - name: Create cert
       command: >
         openssl req -nodes -x509 -newkey rsa:4096
-        -keyout /tmp/{{ broker_name }}-cert/key.pem
-        -out /tmp/{{ broker_name }}-cert/cert.pem
+        -keyout {{ cert_dir }}/key.pem
+        -out {{ cert_dir }}/cert.pem
         -days 365
-        -subj "/CN={{ broker_name }}.{{ broker_name }}.svc"
+        -subj "/CN={{ broker_name }}.{{ broker_namespace }}.svc"
+      args:
+        creates: "{{ cert_dir }}/cert.pem"
+
     - name: Create tls secret
       command: >
-        kubectl create secret tls -n {{ broker_namespace }} {{ broker_name }}-tls
-        --cert="/tmp/{{ broker_name }}-cert/cert.pem"
-        --key="/tmp/{{ broker_name }}-cert/key.pem"
+        kubectl create secret tls -n {{ broker_namespace }} {{ broker_tls_name }}
+        --cert="{{ cert_dir }}/cert.pem"
+        --key="{{ cert_dir }}/key.pem"
       register: tls_command
       failed_when: tls_command.rc != 0 and 'AlreadyExists' not in tls_command.stderr
+
     - name: Register certificate related facts for broker
       set_fact:
-        broker_ca_crt: "{{ lookup('file', '/tmp/' + broker_name + '-cert/cert.pem') | b64encode }}"
+        broker_ca_crt: "{{ lookup('file', cert_dir + '/cert.pem') | b64encode }}"
 
-- name: Get CA for Broker
-  when: cluster == 'openshift'
+- when: cluster == 'openshift'
   block:
     - name: Get the cluster ca
       shell: >
         kubectl get secrets -n {{ broker_namespace }} {{ broker_name }}-client
         -o yaml | grep service-ca.crt | awk '{ print $2 }'
       register: cluster_ca
+
     - name: Register certificate related facts for broker
       set_fact:
         broker_ca_crt: "{{ cluster_ca.stdout }}"
