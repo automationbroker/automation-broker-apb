@@ -48,7 +48,11 @@ data:
 {% if broker_dao_type == 'etcd' %}
       etcd_host: {{ etcd_host }}
       etcd_port: {{ etcd_port }}
+{%   if cluster == 'kubernetes' %}
+      etcd_ca_file: /var/run/etcd-ca/ca.crt
+{%   else %}
       etcd_ca_file: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+{%   endif %}
       etcd_client_cert: /var/run/etcd-auth/client.crt
       etcd_client_key: /var/run/etcd-auth/client.key
 {% endif %}

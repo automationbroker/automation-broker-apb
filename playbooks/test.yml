@@ -6,7 +6,7 @@
   connection: local
   tasks:
     # Test crd
-    - name: Provision test
+    - name: Provision test with CRDs
       include_role:
         name: automation-broker-apb
       vars:
@@ -21,7 +21,7 @@
       delay: 10
       until: broker_ready.stdout == 'True'
 
-    - name: Deprovision test
+    - name: Deprovision test with CRDs
       include_role:
         name: automation-broker-apb
       vars:
@@ -33,14 +33,14 @@
       vars:
         namespace_lookup: "{{ lookup('k8s', kind='Namespace', resource_name='automation-broker') }}"
       set_fact:
-        namespace: "{{ namespace_lookup }}"
+        _namespace_status: "{{ namespace_lookup }}"
       retries: 10
       delay: 5
       until:
         - not namespace_lookup
 
     # Test etcd
-    - name: Provision test
+    - name: Provision test with ETCD
       include_role:
         name: automation-broker-apb
       vars:
@@ -55,7 +55,7 @@
       delay: 10
       until: broker_ready.stdout == 'True'
 
-    - name: Deprovision test
+    - name: Deprovision test with ETCD
       include_role:
         name: automation-broker-apb
       vars:
@@ -67,7 +67,7 @@
       vars:
         namespace_lookup: "{{ lookup('k8s', kind='Namespace', resource_name='automation-broker') }}"
       set_fact:
-        namespace: "{{ namespace_lookup }}"
+        _namespace_status: "{{ namespace_lookup }}"
       retries: 10
       delay: 5
       until:
