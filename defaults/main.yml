@@ -10,7 +10,7 @@ broker_namespace: "{{ broker_name }}"
 create_broker_namespace: false
 
 # The image to use for the broker
-broker_image: ansibleplaybookbundle/origin-ansible-service-broker:latest
+broker_image: ansibleplaybookbundle/origin-ansible-service-broker:release-1.1
 broker_image_pull_policy: "IfNotPresent"
 broker_probe_initial_delay: 120
 broker_node_selector: ""
@@ -57,7 +57,7 @@ broker_dockerhub_enabled: true
 broker_dockerhub_name: dh
 broker_dockerhub_url: https://registry.hub.docker.com
 broker_dockerhub_org: ansibleplaybookbundle
-broker_dockerhub_tag: latest
+broker_dockerhub_tag: release-1.1
 broker_dockerhub_white_list: [ ".*-apb$" ]
 
 # Broker local openshift registry options
