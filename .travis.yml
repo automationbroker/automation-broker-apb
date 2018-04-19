@@ -16,8 +16,7 @@ script:
   - export binding='clusterrolebinding'
 
   # Download test shim.
-  # - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ansibleplaybookbundle/apb-test-shim/master/apb-test.sh
-  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/djzager/apb-test-shim/up-minikube/apb-test.sh
+  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ansibleplaybookbundle/apb-test-shim/master/apb-test.sh
   - chmod +x ${PWD}/apb-test.sh
 
   # Run tests.
