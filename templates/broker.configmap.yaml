@@ -81,6 +81,7 @@ data:
       ssl_cert: /etc/tls/private/tls.crt
       auto_escalate: {{ broker_auto_escalate }}
       cluster_url: {{ broker_namespace }}
+      dashboard_redirector: http://{{ broker_redirector }}
       auth:
         - type: basic
           enabled: {{ broker_basic_auth_enabled }}

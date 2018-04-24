@@ -44,13 +44,33 @@
     - broker.service.yaml
     - broker.serviceaccount.yaml
     - broker.clusterrolebinding.yaml
-    - broker.configmap.yaml
     - broker-auth.clusterrole.yaml
     - broker-auth.clusterrolebinding.yaml
     - broker-client.serviceaccount.yaml
     - broker-client.secret.yaml
     - broker-client.clusterrolebinding.yaml
     - broker-access.clusterrole.yaml
+
+- when: cluster == 'openshift'
+  block:
+    - name: 'Set routes state={{ state }}'
+      openshift_raw:
+        state: '{{ state }}'
+        definition: "{{ lookup('template', item) | from_yaml }}"
+      with_items:
+        - broker.route.yaml
+        - broker-redirector.route.yaml
+
+    - name: Get route
+      set_fact:
+        broker_redirector: "{{
+          lookup(
+            'openshift',
+            kind='Route',
+            namespace=broker_namespace,
+            resource_name='broker-redirector'
+          ) | json_query('spec.host')
+        }}"
 
 - name: 'Broker auth secret state={{ state }}'
   k8s_raw:
@@ -64,16 +84,15 @@
 - include_tasks: "generate_certificate.yaml"
   when: apb_action == 'provision'
 
+- name: 'Set configmap state={{ state }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'broker.configmap.yaml') | from_yaml }}"
+
 - name: 'Set broker deployment object state={{ state }}'
   openshift_raw:
     state: '{{ state }}'
     definition: "{{ lookup('template', 'broker.deployment.yaml') | from_yaml }}"
-
-- name: 'Set route state={{ state }}'
-  openshift_raw:
-    state: '{{ state }}'
-    definition: "{{ lookup('template', 'broker.route.yaml') | from_yaml }}"
-  when: cluster == 'openshift'
 
 # Handle the service-catalog cluster object
 # Until we have the dynamic client, we'll have to kubectl create the clusterservicebroker object
