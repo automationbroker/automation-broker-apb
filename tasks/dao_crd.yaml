@@ -10,7 +10,8 @@
 #    - jobstates.crd.yaml
 #    - servicebindings.crd.yaml
 #    - serviceinstances.crd.yaml
-
+#
+#
 - name: 'Use kubectl to {{ kubectl_action }} cluster resource definitions'
   command: kubectl {{ kubectl_action }} -f {{ lookup('fileglob', item) }}
   register: crd_command
@@ -20,3 +21,15 @@
     - jobstates.crd.yaml
     - servicebindings.crd.yaml
     - serviceinstances.crd.yaml
+  when: broker_image_tag != "canary"
+
+- name: 'Use kubectl to {{ kubectl_action }} cluster resource definitions'
+  command: kubectl {{ kubectl_action }} -f {{ lookup('fileglob', item) }}
+  register: crd_command
+  failed_when: crd_command.rc != 0 and 'AlreadyExists' not in crd_command.stderr and 'NotFound' not in crd_command.stderr
+  with_items:
+    - bundle.crd-canary.yaml
+    - bundlebindings.crd-canary.yaml
+    - bundleinstances.crd-canary.yaml
+  when: broker_image_tag == "canary"
+
