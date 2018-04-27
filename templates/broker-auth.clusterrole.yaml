@@ -19,10 +19,17 @@ rules:
     # attributeRestrictions: null
     resources: ["networkpolicies"]
     verbs: ["create", "delete"]
+{% if broker_tag == 'canary' %}
+  - apiGroups: ["automationbroker.io"]
+    # attributeRestrictions: null
+    resources: ["bundles", "bundlebindings", "bundleinstances"]
+    verbs: ["*"]
+{% else %}
   - apiGroups: ["automationbroker.io"]
     # attributeRestrictions: null
     resources: ["bundles", "jobstates", "servicebindings", "serviceinstances"]
     verbs: ["*"]
+{% endif %}
 {% if cluster == 'openshift' %}
   - apiGroups: ["authorization.openshift.io"]
     resources: ["subjectrulesreview"]
