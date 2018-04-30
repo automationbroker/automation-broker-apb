@@ -1,3 +1,6 @@
+[![Build
+Status](https://travis-ci.org/automationbroker/automation-broker-apb.svg?branch=master)](https://travis-ci.org/automationbroker/automation-broker-apb)
+
 Automation Broker APB
 =========
 
@@ -37,18 +40,11 @@ If you don't have sufficient permissions to create the `clusterrolebinding`,
 the provision/deprovision will fail.
 
 ```
-$ kubectl create namespace automation-broker
-$ kubectl create serviceaccount automation-broker-apb --namespace automation-broker
-$ kubectl create clusterrolebinding automation-broker-apb --clusterrole=cluster-admin --serviceaccount=automation-broker:automation-broker-apb
-$ kubectl run automation-broker-apb \
-    --namespace=automation-broker \
-    --image=automation-broker-apb \
-    --image-pull-policy=Never \
-    --restart=Never \
-    --attach=true \
-    --serviceaccount=automation-broker-apb \
-    -- provision -e broker_name=automation-broker
+$ kubectl create -f install.yaml
 ```
+
+This will create the serviceaccount, clusterrolebinding, and job to install the
+broker.
 
 Example Playbook
 ----------------
