@@ -15,11 +15,12 @@
         broker_dao_type: crd
 
     - name: Wait for clusterservicebroker to become available
-      command: kubectl get clusterservicebrokers automation-broker -o go-template={%raw%}'{{ range .status.conditions }}{{ if eq .type "Ready" }}{{ .status }}{{ end }}{{ end }}'{%endraw%}
-      register: broker_ready
+      debug: msg='Waiting...'
+      until: (broker.status.conditions | selectattr("type", "equalto", "Ready")|first).status == "True"
+      vars:
+        broker: '{{ lookup("k8s", kind="ClusterServiceBroker", resource_name="automation-broker")|first }}'
       retries: 60
       delay: 10
-      until: broker_ready.stdout == 'True'
 
     - name: Deprovision test with CRDs
       include_role:
