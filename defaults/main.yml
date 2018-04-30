@@ -21,10 +21,6 @@ broker_kind: ClusterServiceBroker
 broker_clusterrole: admin
 broker_sandbox_role: edit
 
-# How does broker save state? crd | etcd
-# TODO: Support etcd https://github.com/automationbroker/automation-broker-apb/issues/1
-broker_dao_type: etcd
-
 # ETCD configuration (ignored unless dao_type is 'etcd')
 etcd_image: quay.io/coreos/etcd:latest
 etcd_path: /usr/local/bin/etcd
