@@ -44,18 +44,16 @@ data:
 {%     endfor %}
 {% endif %}
     dao:
-      type: {{ broker_dao_type | quote }}
-{% if broker_dao_type == 'etcd' %}
+      type: "etcd"
       etcd_host: {{ etcd_host }}
       etcd_port: {{ etcd_port }}
-{%   if cluster == 'kubernetes' %}
+{% if cluster == 'kubernetes' %}
       etcd_ca_file: /var/run/etcd-ca/ca.crt
-{%   else %}
+{% else %}
       etcd_ca_file: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
-{%   endif %}
+{% endif %}
       etcd_client_cert: /var/run/etcd-auth/client.crt
       etcd_client_key: /var/run/etcd-auth/client.key
-{% endif %}
     log:
       logfile: /var/log/ansible-service-broker/asb.log
       stdout: true

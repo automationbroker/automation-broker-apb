@@ -73,13 +73,11 @@ spec:
           - name: broker-auth-volume
             mountPath: /var/run/asb-auth
 {% endif %}
-{% if broker_dao_type == 'etcd' %}
           - name: etcd-auth
             mountPath: /var/run/etcd-auth
-{%   if cluster == 'kubernetes' %}
+{% if cluster == 'kubernetes' %}
           - name: etcd-ca
             mountPath: /var/run/etcd-ca
-{%   endif %}
 {% endif %}
       volumes:
         - name: config-volume
@@ -96,13 +94,11 @@ spec:
           secret:
             secretName: broker-auth
 {% endif %}
-{% if broker_dao_type == 'etcd' %}
         - name: etcd-auth
           secret:
             secretName: etcd-auth
-{%   if cluster == 'kubernetes' %}
+{% if cluster == 'kubernetes' %}
         - name: etcd-ca
           secret:
             secretName: etcd-ca
-{%   endif %}
 {% endif %}
