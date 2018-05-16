@@ -10,7 +10,7 @@ broker_namespace: "{{ broker_name }}"
 create_broker_namespace: false
 
 # The image to use for the broker
-broker_image_tag: latest
+broker_image_tag: release-1.2
 broker_image: "ansibleplaybookbundle/origin-ansible-service-broker:{{ broker_image_tag }}"
 broker_image_pull_policy: "IfNotPresent"
 broker_probe_initial_delay: 120
