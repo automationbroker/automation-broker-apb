@@ -3,7 +3,7 @@
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: {{ broker_kind }}
 metadata:
-  name: {{ broker_name }}
+  name: "{{ cluster_service_broker_name }}"
 spec:
   url: https://{{ broker_name }}.{{ broker_namespace }}.svc:1338/{{ broker_name }}/
   authInfo:
