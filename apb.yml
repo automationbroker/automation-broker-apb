@@ -32,3 +32,7 @@ plans:
         title: Container image for the broker
         type: string
         default: ansibleplaybookbundle/origin-ansible-service-broker:latest
+      - name: cluster_service_broker_name
+        title: Cluster Service Broker Resource Name
+        default: ansible-service-broker
+        description: By default the apb CLI tool will look for ansible-service-broker

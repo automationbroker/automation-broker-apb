@@ -80,3 +80,6 @@ broker_helm_name: stable
 broker_helm_url: https://kubernetes-charts.storage.googleapis.com
 broker_helm_runner: docker.io/automationbroker/helm-runner:latest
 broker_helm_white_list: [ ".*" ]
+
+#Cluster Service Broker resource name. apb looks for ansible-service-broker.
+cluster_service_broker_name: ansible-service-broker
