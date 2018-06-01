@@ -8,9 +8,11 @@ broker_name: automation-broker
 broker_namespace: "{{ broker_name }}"
 
 create_broker_namespace: false
+wait_for_broker: false # By default, we do not wait for the broker to be available
 
 # The image to use for the broker
-broker_image: ansibleplaybookbundle/origin-ansible-service-broker:release-1.1
+broker_image_tag: release-1.1
+broker_image: "ansibleplaybookbundle/origin-ansible-service-broker:{{ broker_image_tag }}"
 broker_image_pull_policy: "IfNotPresent"
 broker_probe_initial_delay: 120
 broker_node_selector: ""
@@ -22,7 +24,6 @@ broker_clusterrole: admin
 broker_sandbox_role: edit
 
 # How does broker save state? crd | etcd
-# TODO: Support etcd https://github.com/automationbroker/automation-broker-apb/issues/1
 broker_dao_type: etcd
 
 # ETCD configuration (ignored unless dao_type is 'etcd')
