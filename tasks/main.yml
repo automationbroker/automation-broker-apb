@@ -1,40 +1,37 @@
 ---
 
-- name: 'Determine cluster type'
-  command: oc version
-  register: oc_version
-
 # These can always be overridden at the command line
 # http://docs.ansible.com/ansible/devel/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
 - name: 'Set facts'
   set_fact:
-    cluster: "{{ 'openshift' if 'openshift' in oc_version.stdout else 'kubernetes' }}"
-    broker_auto_escalate: "{{ 'true' if cluster == 'kubernetes' else 'false' }}"
-    broker_local_openshift_enabled: "{{ true if cluster == 'openshift' else false }}"
+    cluster: "{{ _cluster_type }}"
+    broker_auto_escalate: "{{ 'true' if _cluster_type == 'kubernetes' else 'false' }}"
+    broker_local_openshift_enabled: "{{ 'true' if _cluster_type == 'openshift' else 'false' }}"
+  vars:
+    _cluster_type: '{{ "openshift" if "openshift" in lookup("k8s", cluster_info="version") else "kubernetes" }}'
 
-- name: 'Check for service catalog'
-  command: kubectl api-versions
-  register: kapi_versions
-  when: apb_action == 'provision'
-
-- name: 'Fail if service-catalog not installed'
-  fail:
+- name: Debug important facts
+  debug:
     msg:
-     There is no service catalog api-versions available in this cluster.
-     Please install the service catalog and retry.
-  when: apb_action == 'provision' and 'servicecatalog.k8s.io' not in kapi_versions.stdout
+      - "Cluster: {{ cluster }}"
+      - "broker_auto_escalate {{ broker_auto_escalate }}"
+      - "broker_local_openshift_enabled {{ broker_local_openshift_enabled }}"
 
 - name: 'Set broker namespace state={{ state }}'
-  openshift_raw:
+  k8s:
     state: '{{ state }}'
     definition: "{{ lookup('template', 'broker.namespace.yaml') | from_yaml }}"
   when: create_broker_namespace
 
-- name: 'Get the broker namespace'
-  set_fact:
-    _broker_namespace: "{{ lookup('k8s', kind='Namespace', resource_name=broker_namespace) }}"
-  failed_when: not _broker_namespace
-  when: apb_action == 'provision'
+- name: Verify preconditions
+  assert:
+    that:
+      - '"servicecatalog.k8s.io" in lookup("k8s", cluster_info="api_groups")'
+      - 'lookup("k8s", kind="Namespace", resource_name=broker_namespace) is defined'
+    msg:
+      - Service Catalog must be installed in the cluster
+      - The broker namespace must exist
+  when: state == 'present'
 
 - name: 'Set broker objects state={{ state }}'
   k8s_raw:
