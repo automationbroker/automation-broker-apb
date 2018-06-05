@@ -46,8 +46,6 @@
     - name: broker.service.yaml
     - name: broker.route.yaml
       apply: "{{ True if cluster == 'openshift' else False }}"
-    - name: broker-redirector.route.yaml
-      apply: "{{ True if cluster == 'openshift' else False }}"
     - name: broker.serviceaccount.yaml
     - name: broker.clusterrolebinding.yaml
     - name: broker.configmap.yaml

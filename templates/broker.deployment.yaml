@@ -40,13 +40,6 @@ spec:
     spec:
       serviceAccount: {{ broker_name }}
       containers:
-        - name: broker-redirector
-          image: {{ broker_image }}
-          imagePullPolicy: {{ broker_image_pull_policy }}
-          ports:
-            - containerPort: 1337
-              protocol: TCP
-          command: [ 'dashboard-redirector' ]
         - name: broker
           image: {{ broker_image }}
           imagePullPolicy: {{ broker_image_pull_policy }}
