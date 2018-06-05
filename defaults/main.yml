@@ -8,6 +8,7 @@ broker_name: automation-broker
 broker_namespace: "{{ broker_name }}"
 
 create_broker_namespace: false
+wait_for_broker: false # By default, we do not wait for the broker to be available
 
 # The image to use for the broker
 broker_image_tag: latest

@@ -35,4 +35,4 @@ plans:
       - name: cluster_service_broker_name
         title: Cluster Service Broker Resource Name
         default: ansible-service-broker
-        description: By default the apb CLI tool will look for ansible-service-broker
+        description: Name for the clusterservicebroker object
