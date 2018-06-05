@@ -23,6 +23,6 @@ cluster_service_broker_query: "{{
     'k8s',
     api_version='servicecatalog.k8s.io/v1beta1',
     kind='ClusterServiceBroker',
-    resource_name=broker_name
+    resource_name=cluster_service_broker_name
   ) | json_query(ready_status_query)
 }}"

@@ -14,14 +14,8 @@
       vars:
         apb_action: provision
         create_broker_namespace: true
+        wait_for_broker: true
         broker_dao_type: crd
-
-    - name: Wait for clusterservicebroker to become available
-      command: kubectl get clusterservicebrokers {{ cluster_service_broker_name }} -o go-template={%raw%}'{{ range .status.conditions }}{{ if eq .type "Ready" }}{{ .status }}{{ end }}{{ end }}'{%endraw%}
-      register: broker_ready
-      retries: 60
-      delay: 10
-      until: broker_ready.stdout == 'True'
 
     - name: Deprovision test with CRDs
       include_role:
@@ -48,14 +42,8 @@
       vars:
         apb_action: provision
         create_broker_namespace: true
+        wait_for_broker: true
         broker_dao_type: etcd
-
-    - name: Wait for clusterservicebroker to become available
-      command: kubectl get clusterservicebrokers {{ cluster_service_broker_name }} -o go-template={%raw%}'{{ range .status.conditions }}{{ if eq .type "Ready" }}{{ .status }}{{ end }}{{ end }}'{%endraw%}
-      register: broker_ready
-      retries: 60
-      delay: 10
-      until: broker_ready.stdout == 'True'
 
     - name: Deprovision test with ETCD
       include_role:
