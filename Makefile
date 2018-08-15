@@ -1,10 +1,20 @@
 REGISTRY         ?= docker.io
-ORG              ?= automationbroker
+ORG              ?= fabianvf
 TAG              ?= latest
-IMAGE            ?= ${REGISTRY}/${ORG}/automation-broker-apb:${TAG}
+APB_IMAGE        ?= ${REGISTRY}/${ORG}/automation-broker-apb:${TAG}
+OPERATOR_IMAGE   ?= ${REGISTRY}/${ORG}/automation-broker-operator:${TAG}
 
-build: ## Build apb image
-	docker build -f Dockerfile -t ${IMAGE} .
+
+build-apb: ## Build apb image
+	docker build -f Dockerfile -t ${APB_IMAGE} .
+
+build-operator: ## Build operator image
+	docker build -f operator/Dockerfile -t ${OPERATOR_IMAGE} .
+
+build: build-apb build-operator ## Build APB and Operator
+
+push-operator: build-operator
+	docker push ${OPERATOR_IMAGE}
 
 help: ## Show this help screen
 	@echo 'Usage: make <OPTIONS> ... <TARGETS>'

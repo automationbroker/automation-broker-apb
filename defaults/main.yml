@@ -1,6 +1,6 @@
 ---
 # Install by default
-apb_action: provision
+state: present
 cluster: "kubernetes"
 
 # Broker configuration values
@@ -20,7 +20,8 @@ broker_node_selector: ""
 # The kind of broker, useful in the case the service-catalog
 # supports namespaced service brokers
 broker_kind: ClusterServiceBroker
-broker_clusterrole: admin
+broker_cluster_role: admin
+broker_clusterrole: '{{ broker_cluster_role }}'
 broker_sandbox_role: edit
 
 # How does broker save state? crd | etcd
@@ -83,4 +84,27 @@ broker_helm_runner: docker.io/automationbroker/helm-runner:latest
 broker_helm_white_list: [ ".*" ]
 
 #Cluster Service Broker resource name. apb looks for ansible-service-broker.
-cluster_service_broker_name: ansible-service-broker
+cluster_service_broker_name: '{{ broker_name }}'
+dockerhub_registry:
+  type: dockerhub
+  name: '{{ broker_dockerhub_name }}'
+  url: '{{ broker_dockerhub_url }}'
+  org: '{{ broker_dockerhub_org | quote }}'
+  tag: '{{ broker_dockerhub_tag | quote }}'
+  white_list: '{{ broker_dockerhub_white_list }}'
+
+local_openshift_registry:
+  type: local_openshift
+  name: '{{ broker_local_openshift_name }}'
+  namespaces: '{{ broker_local_openshift_namespaces }}'
+  white_list: '{{ broker_local_openshift_white_list }}'
+
+helm_registry:
+  type: helm
+  name: '{{ broker_helm_name }}'
+  url: '{{ broker_helm_url }}'
+  runner: '{{ broker_helm_runner }}'
+  white_list: '{{ broker_helm_white_list }}'
+
+# conditionally set later based on Cluster configuration
+default_registries: []
