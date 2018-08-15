@@ -25,7 +25,7 @@ bWUgZm9yIHRoZSBjbHVzdGVyc2VydmljZWJyb2tlciBvYmplY3QK"
 
 # Add our role into the ansible roles dir
 ADD playbooks /opt/apb/actions
-ADD . /opt/ansible/roles/automation-broker-apb
+ADD . /opt/ansible/roles/automation-broker
 
 RUN yum -y install epel-release openssl && yum clean all
 

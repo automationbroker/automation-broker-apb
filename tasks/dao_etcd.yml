@@ -24,7 +24,7 @@
     - name: Create tls secret
       when: cluster == 'kubernetes' and state == 'present'
       command: >
-        kubectl create secret tls -n {{ broker_namespace }} {{ etcd_tls_name }}
+        kubectl create secret tls -n {{ broker_config.openshift.broker_namespace }} {{ etcd_tls_name }}
         --cert="{{ broker_etcd_certs_dir }}/cert.pem"
         --key="{{ broker_etcd_certs_dir }}/key.pem"
       register: tls_command
@@ -74,5 +74,5 @@
     - name: etcd-auth.secret.yaml
     - name: etcd.service.yaml
     - name: etcd.pvc.yaml
-      state: "{{ state if etcd_persist_storage else 'absent' }}"
+      state: "{{ state if (etcd_persist_storage|bool) else 'absent' }}"
     - name: etcd.deployment.yaml

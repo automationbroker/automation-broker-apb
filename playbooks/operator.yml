@@ -1,7 +1,8 @@
 ---
 
-- name: automation-broker-apb provision
+- name: automation-broker-operator
   hosts: localhost
+  become: false
   gather_facts: false
   connection: local
   roles:

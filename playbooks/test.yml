@@ -12,7 +12,7 @@
       include_role:
         name: automation-broker-apb
       vars:
-        apb_action: provision
+        state: present
         create_broker_namespace: true
         wait_for_broker: true
         broker_dao_type: crd
@@ -21,7 +21,7 @@
       include_role:
         name: automation-broker-apb
       vars:
-        apb_action: deprovision
+        state: absent
         create_broker_namespace: true
         broker_dao_type: crd
 
@@ -40,7 +40,7 @@
       include_role:
         name: automation-broker-apb
       vars:
-        apb_action: provision
+        state: present
         create_broker_namespace: true
         wait_for_broker: true
         broker_dao_type: etcd
@@ -49,7 +49,7 @@
       include_role:
         name: automation-broker-apb
       vars:
-        apb_action: deprovision
+        state: absent
         create_broker_namespace: true
         broker_dao_type: etcd
 

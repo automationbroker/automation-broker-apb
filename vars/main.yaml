@@ -1,14 +1,9 @@
 ---
 
 kubectl_action_map:
-  provision: create
-  deprovision: delete
-kubectl_action: "{{ kubectl_action_map[apb_action] }}"
-
-state_map:
-  provision: present
-  deprovision: absent
-state: "{{ state_map[apb_action] }}"
+  present: create
+  absent: delete
+kubectl_action: "{{ kubectl_action_map[state] }}"
 
 broker_tls_name: "{{ broker_name }}-tls"
 broker_tls_cert_dir: "/tmp/{{ broker_name }}-cert"
