@@ -5,7 +5,7 @@ Automation Broker APB
 =========
 
 Ansible Role for installing (and uninstalling) the
-[automation-broker](http://automation-broker.io) in a Kubernetes/OpenShift
+[automation-broker](http://automationbroker.io) in a Kubernetes/OpenShift
 Cluster with the
 [service-catalog](https://github.com/kubernetes-incubator/service-catalog).
 
